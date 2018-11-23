@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: web
+spec:
+  selector:
+    matchLabels:
+      app: web
+  serviceName: web
+  replicas: 1
+  template:
+    metadata:
+      name: web
+      labels:
+        app: web
+    spec:
+      containers:
+      - image: grafana/grafana:5.3.3
+        name: grafana
+        securityContext:
+          runAsUser: 0
+        env:
+          - name: GF_SECURITY_ADMIN_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: grafana-secrets
+                key: password
+        ports:
+          - containerPort: 3000
+        readinessProbe:
+          httpGet:
+            path: /login
+            port: 3000
+        volumeMounts:
+          - name: grafana-vol
+            mountPath: /var/lib/grafana
+  volumeClaimTemplates:
+  - metadata:
+      name: grafana-vol
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 1Gi    

@@ -1,0 +1,10 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: ingress-web
+spec:
+  tls:
+  - secretName: cert
+  backend:
+    serviceName: web-service
+    servicePort: 3000

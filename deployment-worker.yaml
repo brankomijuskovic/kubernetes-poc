@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: worker
+spec:
+  selector:
+    matchLabels:
+      app: worker
+  replicas: 1
+  minReadySeconds: 10
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+    type: RollingUpdate
+  template:
+    metadata:
+      name: worker
+      labels:
+        app: worker
+    spec:
+      containers:
+      - image: enemy/currency_check:41
+        name: currency-check
+        env:
+          - name: SLEEP
+            value: "3600"
+          - name: API_KEY
+            valueFrom:
+              secretKeyRef:
+                name: worker-secrets
+                key: api_key
+
+
+
