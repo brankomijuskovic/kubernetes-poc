@@ -22,6 +22,13 @@ spec:
       containers:
       - image: enemy/currency_check:41
         name: currency-check
+        resources:
+          requests:
+            cpu: 100m
+            memory: 100Mi
+          limits:
+            cpu: 100m
+            memory: 100Mi
         env:
           - name: SLEEP
             value: "3600"
